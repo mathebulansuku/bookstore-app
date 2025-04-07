@@ -1,7 +1,12 @@
 import express from "express";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
+
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "10d" });
+};
 
 router.post("/login", async (req, res) => {
   try {
@@ -36,6 +41,9 @@ router.post("/login", async (req, res) => {
     const profileImage = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
 
     const user = new User({ email, username, password, profileImage });
+    await user.save(); //saves user to database
+
+    const token = generateToken(user._id);
   } catch (err) {
     console.log(err);
   }
