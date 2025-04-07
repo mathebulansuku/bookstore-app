@@ -2,8 +2,11 @@ import express from "express";
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  res.send("Login");
+router.post("/login", async (req, res) => {
+  try {
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/register", (req, res) => {
