@@ -8,7 +8,7 @@ const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "10d" });
 };
 
-router.post("/login", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { email, username, password } = req.body;
 
@@ -19,7 +19,7 @@ router.post("/login", async (req, res) => {
     if (password.length < 6) {
       return res
         .status(400)
-        .json({ error: "Password must be at least 6 characters" });
+        .json({ message: "Password must be at least 6 characters" });
     }
 
     if (username.length < 3) {
@@ -31,11 +31,11 @@ router.post("/login", async (req, res) => {
     //check if user already exists
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
-      return res.status(400).json({ error: "Email already exists" });
+      return res.status(400).json({ message: "Email already exists" });
     }
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(400).json({ error: "Username already exists" });
+      return res.status(400).json({ message: "Username already exists" });
     }
 
     const profileImage = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
@@ -52,13 +52,14 @@ router.post("/login", async (req, res) => {
       profileImage: user.profileImage,
       token,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log("Error in register route", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.post("/register", (req, res) => {
-  res.send("Register");
+router.post("/login", (req, res) => {
+  res.send("login");
 });
 
 export default router;
