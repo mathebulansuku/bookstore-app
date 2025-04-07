@@ -44,6 +44,14 @@ router.post("/login", async (req, res) => {
     await user.save(); //saves user to database
 
     const token = generateToken(user._id);
+
+    res.status(201).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      profileImage: user.profileImage,
+      token,
+    });
   } catch (err) {
     console.log(err);
   }
