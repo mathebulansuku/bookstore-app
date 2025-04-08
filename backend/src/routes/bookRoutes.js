@@ -35,8 +35,25 @@ router.post("/", protectRoute, async (req, res) => {
 
 router.get("/", protectRoute, async (req, res) => {
   try {
-    const books = await Book.find().sort({ createdAt: -1 }); //gives books in descending order
-    res.send(books);
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 5;
+    const skip = (page - 1) * limit;
+
+    const books = await Book.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "username profileImage");
+
+    // populate - Gets the username and userId
+    // skip - Jumps the previous query to give the next requested page limit
+
+    const totalBooks = await Book.countDocuments();
+    res.send({
+      books,
+      currentPage: page,
+      totalBooks: Math.ceil(totalBooks / limit),
+    });
   } catch (error) {
     console.log("Error getting books", error);
     res.status(500).json({ message: error.message });
