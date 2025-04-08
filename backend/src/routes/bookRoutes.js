@@ -56,7 +56,7 @@ router.get("/", protectRoute, async (req, res) => {
     });
   } catch (error) {
     console.log("Error getting books", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
