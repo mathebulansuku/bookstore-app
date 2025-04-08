@@ -60,6 +60,19 @@ router.get("/", protectRoute, async (req, res) => {
   }
 });
 
+//GET book recommendation route
+router.get("/user", async (req, res) => {
+  try {
+    const books = await Book.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(books);
+  } catch (error) {
+    console.log("Error getting books", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.delete("/:id", protectRoute, async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
