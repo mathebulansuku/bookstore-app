@@ -33,4 +33,14 @@ router.post("/", protectRoute, async (req, res) => {
   }
 });
 
+router.get("/", protectRoute, async (req, res) => {
+  try {
+    const books = await Book.find().sort({ createdAt: -1 }); //gives books in descending order
+    res.send(books);
+  } catch (error) {
+    console.log("Error getting books", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
