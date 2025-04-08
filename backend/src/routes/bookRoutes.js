@@ -13,7 +13,22 @@ router.post("/", async (req, res) => {
     //upload image to cloudinary
     const uploadResponse = await cloudinary.uploader.upload(image);
     const imageUrl = uploadResponse.secure_url;
-  } catch (error) {}
+
+    const newBook = new Book({
+      title,
+      caption,
+      rating,
+      image: imageUrl,
+      user: req.user._id,
+    });
+
+    await newBook.save(); //save the book to the database
+
+    res.status(201).json(newBook);
+  } catch (error) {
+    console.log("Error creating book", error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
 export default router;
